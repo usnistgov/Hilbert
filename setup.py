@@ -22,7 +22,8 @@ LICENSE = 'Public Domain'
 DOWNLOAD_URL = ''
 VERSION = __version__
 INSTALL_REQUIRES = ['numpy', 'scipy', 'scikit-learn']
-CLASSIFIERS = ['Intended Audience :: Science/Research',
+CLASSIFIERS = ['Development Status :: 3 - Alpha',
+               'Intended Audience :: Science/Research',
                'Intended Audience :: Developers',
                'Programming Language :: Python',
                'Topic :: Software Development',

@@ -24,6 +24,17 @@ same as that implemented in `CRIkit2<https://github.com/CCampJr/CRIkit2/blob/mas
 Coming Soon
 ------------
 
+-   Implementations
+
+    -   Marple FFT-based
+    -   B-splines implementation (Bilato)
+    -   Haar multiresolution
+    -   Sinc / Whittaker Cardinal
+    -   and more!
+
+-   Documentation
+-   Jupyter Notebook Examples
+
 
 Dependencies
 ------------
