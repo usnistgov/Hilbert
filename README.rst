@@ -18,9 +18,8 @@ Hilbert - Discrete Hilbert Transform Implementations
 **Hilbert** is a project that will contain numerous implementations of the discrete Hilbert transform.
 
 Currently, this package is a work in progress and should probably not be used. *hilbertfft* is the
-same as that implemented in https://github.com/CCampJr/CRIkit2/blob/master/crikit/cri/algorithms/kk.py
+same as that implemented in `CRIkit2<https://github.com/CCampJr/CRIkit2/blob/master/crikit/cri/algorithms/kk.py>`_
 
-charles.camp@nist.gov
 
 Coming Soon
 ------------
@@ -60,6 +59,24 @@ WITH THIS SOFTWARE, WHETHER OR NOT BASED UPON WARRANTY, CONTRACT, TORT, OR
 OTHERWISE, WHETHER OR NOT INJURY WAS SUSTAINED BY PERSONS OR PROPERTY OR 
 OTHERWISE, AND WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT OF THE 
 RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
+
+Portions of this package include source code edited from the `sklearn's project template<
+https://github.com/scikit-learn-contrib/project-template/blob/master/doc/index.rst>`_, which
+requires the following notice(s):
+
+Copyright (c) 2016, Vighnesh Birodkar and scikit-learn-contrib contributors
+All rights reserved.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 Contact
 -------
