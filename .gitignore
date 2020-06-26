@@ -8,6 +8,7 @@ __pycache__/
 
 # VS-Code
 settings.json
+.vscode/*
 
 # scikit-learn specific
 doc/_build/
