@@ -5,6 +5,7 @@ import numpy as np
 import sklearn
 from sklearn.base import BaseEstimator, ClassifierMixin, TransformerMixin
 from sklearn.utils.validation import check_X_y, check_array, check_is_fitted
+from sklearn.linear_model import LinearRegression
 
 from crikit.cri.algorithms.kk import hilbertfft
 
@@ -27,7 +28,7 @@ class MLHilb(TransformerMixin, BaseEstimator):
         Number of features
     """        
     
-    def __init__(self, regressor, pad_first=0, pad_second=1):
+    def __init__(self, regressor=LinearRegression(fit_intercept=False, n_jobs=-1), pad_first=0, pad_second=1):
         self.regressor = regressor
         self.pad_first = pad_first
         self.pad_second = pad_second        
@@ -120,4 +121,21 @@ class MLHilb(TransformerMixin, BaseEstimator):
         self.baseline_ = -1 * np.dot(dHB_, self.transfer_matrix_.T)-self.transfer_matrix_intercept_
                 
         return HB_first_ - self.baseline_
+
+    def score(self, X, y):
+        """[summary]
+
+        Parameters
+        ----------
+        X : {array-like}, shape (n_samples, n_features)
+            Training data following Y[n] = H{X[n]}
+        y : {array-like}, shape (n_samples, n_features)
+            Target data following Y[n] = H{X[n]}
+
+        Returns
+        -------
+        float
+            Returns the inverse of the median of the MSE (b/c scoring defaults to maximization)
+        """        
+        return 1 / np.median(sklearn.metrics.mean_squared_error(y.T, self.transform(X).T, multioutput='raw_values'))
     
