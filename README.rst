@@ -33,6 +33,7 @@ References
 
 .. [1] P. Henrici, Applied and Computational Complex Analysis Vol III 
         (Wiley-Interscience, 1986).
+        
 .. [2] L. Marple, "Computing the discrete-time “analytic” signal via FFT," 
         IEEE Trans. Signal Process. 47(9), 2600–2603 (1999).
 
