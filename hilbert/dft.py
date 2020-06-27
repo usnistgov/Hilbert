@@ -6,10 +6,12 @@ at its core.
 import numpy as np
 from scipy import fftpack
 
+from scipy.signal import hilbert as _hilbert_analytic_marple
+
 from hilbert.preprocess import pad_edge_mean, mirror
 
-def hilbert_fft(x, axis=-1, bad_value='eps', min_value=None):
-    """Compute the Hilbert Transform using the FFT.
+def hilbert_fft_henrici(x, axis=-1, bad_value='eps', min_value=None):
+    """Compute the Hilbert Transform using the FFT (Henrici).
 
     Parameters
     ----------
@@ -64,6 +66,51 @@ def hilbert_fft(x, axis=-1, bad_value='eps', min_value=None):
 
     return x.real
     
+
+def hilbert_fft_marple(x, axis=-1, bad_value='eps', min_value=None):
+    """Compute the Hilbert Transform using the Marple implemetation FFT.
+
+    Parameters
+    ----------
+    x : array-like
+        Input signal such that y[n] = H{x[n]} will ultimately be returned
+    axis : int, optional
+        For nd-arrays, axis to perform over, by default -1
+    bad_value : {None, 'eps', float}, optional
+        Inf's and NaN's set to bad_value. If 'eps', sets to machine epsilon of 
+        x dtype. If None, skips check. Default is 'eps'.
+    min_value : {None, 'eps', float}, optional
+        Values below min_value set to min_value. If 'eps', sets to machine 
+        epsilon of x dtype. By default None (skip).
+    
+    Returns
+    -------
+    ndarray
+        Hilbert transformed data
+
+    References
+    -----------
+    -   L. Marple, "Computing the discrete-time “analytic” signal via FFT," 
+        IEEE Trans. Signal Process. 47(9), 2600–2603 (1999).
+    """
+
+    if bad_value == 'eps':
+        bad_value = np.finfo(x.dtype).eps
+
+    if min_value == 'eps':
+        min_value = np.finfo(x.dtype).eps
+
+    # SciPy implementation returns the `analytic` signal; thus, taking imag
+    x = _hilbert_analytic_marple(x, axis=axis).imag
+    
+    if bad_value:
+        x[np.isnan(x)] = bad_value
+        x[np.isinf(x)] = bad_value
+        
+    if min_value:
+        x[x < min_value] = min_value
+
+    return x
 
 if __name__ == '__main__':  # pragma: no cover
     # import timeit as _timeit
