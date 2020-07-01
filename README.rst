@@ -43,7 +43,7 @@ Coming Soon
 -   Implementations
 
     -   B-splines implementation (Bilato)
-    -   Haar multiresolution
+    -   Haar multiresolution (Zhou-Yang)
     -   Sinc / Whittaker Cardinal
     -   and more!
 
