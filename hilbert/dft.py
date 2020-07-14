@@ -8,8 +8,6 @@ from scipy import fftpack
 
 from scipy.signal import hilbert as _hilbert_analytic_marple
 
-from hilbert.preprocess import pad_edge_mean, mirror
-
 def hilbert_fft_henrici(x, axis=-1, bad_value='eps', min_value=None):
     """Compute the Hilbert Transform using the FFT (Henrici).
 

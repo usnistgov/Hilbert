@@ -4,87 +4,110 @@ Module for preprocessing of signals
 
 import numpy as np
 
-def pad_edge_mean(x, pad_width, n_edge=1, axis=-1):
-    """
-    Pad data x with edge-values or near-edge mean values along axis
+def _make_pad_window(signal_len, pad_len):
+    """Returns a window (vector) that identifies (True) the original portion
+    of the signal prior to padding.
 
     Parameters
     ----------
+    signal_len : int
+        Length of original signal along axis to-be padded
+    pad_len : int
+        Length of padding applied to each side
 
-    x : ndarray
-        Input array
+    Returns
+    -------
+    ndarray (1D)
+        Window array where True's are location of original signal and False's
+        are padding locations.
+    """
 
+    signal_pad_len = signal_len + 2*pad_len
+    window = np.zeros(signal_pad_len, dtype=np.bool)
+    window[pad_len:-pad_len] = True
+    return window
+
+def _make_pad_list(ndim, pad_width, axis=-1):
+    """Create the pad_sequency for numpy.pad
+
+    Parameters
+    ----------
+    ndim : int
+        Number of dimensions of expected signal
     pad_width : int
-        Size of padding on each side of x
-
-    n_edge : int, optional
-        Number of edge points to average for the pad value, by default 1
-
+        Number of values padded to each edge along specified axis
     axis : int, optional
         Axis to pad, by default -1
 
     Returns
     -------
-    (x_pad, window)
+    list
+        list of lists
 
-    x_pad : ndarray
-        Padded x
+    See Also
+    ---------
+    numpy.pad : Numpy padding routine
+    """    
 
-    window : ndarray (1D)
-        Mask with 0's for pad regions, 1's for original size
-
-    """
-    if pad_width == 0:  # No padding
-        window = np.ones((x.shape[axis]), dtype=np.integer)
-        x_pad = x
-    elif pad_width > 0:
-        orig_shape = x.shape
-        pad_shape = list(orig_shape)
-        pad_shape[axis] += pad_width*2
-
-        window = np.zeros((pad_shape[axis]), dtype=np.integer)
-        window[pad_width:-pad_width] = 1
-        window = window.astype(bool)
-
-        x_pad = np.zeros(pad_shape, dtype=x.dtype)
-        slice_vec = x.ndim*[slice(None)]
-        slice_vec[axis] = slice(pad_width, -pad_width)
-        x_pad[tuple(slice_vec)] = x
-
-        y_slice_vec_low = x.ndim*[slice(None)]
-        y_slice_vec_low[axis] = slice(0, n_edge)
-        y_slice_vec_high = x.ndim*[slice(None)]
-        y_slice_vec_high[axis] = slice(-n_edge, None)
-
-        y_pad_slice_vec_low = x.ndim*[slice(None)]
-        y_pad_slice_vec_low[axis] = slice(0, pad_width)
-        y_pad_slice_vec_high = x.ndim*[slice(None)]
-        y_pad_slice_vec_high[axis] = slice(-pad_width, None)
-
-        x_pad[tuple(y_pad_slice_vec_low)] += x[tuple(y_slice_vec_low)
-                                                         ].mean(axis=axis, keepdims=True)
-        x_pad[tuple(y_pad_slice_vec_high)
-                   ] += x[tuple(y_slice_vec_high)].mean(axis=axis, keepdims=True)
-    else:
-        raise ValueError('pad_width must be >= 0')
-
-    return x_pad, window
-
-
-def mirror(x, axis=-1, prepend=False):
-    """Mirror a signal x along an axis
+    out = ndim*[[0,0]]
+    out[axis] = [pad_width, pad_width]
+    return out
+    
+def pad(x, pad_width, mode='mean', stat_length=1, constant_values=0,
+        reflect_type='even', axis=-1, **kwargs):
+    """Aims to simplify padding over numpy.pad
 
     Parameters
     ----------
-    x : array-like
-        Input signal/array
+    x : ndarray
+        Input vector or array (n-D)
+    pad_width : int
+        Number of values to pad to EACH end of specified axis
+    mode : str, optional
+        Method of padding, by default 'mean'. Selected allowed values are 
+        {'constant', 'edge', 'maximum', 'mean', 'median', 'minimum', 'reflect',
+        'symmetric', 'wrap'}. See numpy.pad for all options.
+    stat_length : int, optional
+        Used in ‘maximum’, ‘mean’, ‘median’, and ‘minimum’. Number of values 
+        at edge of each axis used to calculate the statistic value, 
+        by default 1
+    constant_values : int, optional
+        Used in ‘constant’. The values to set the padded values for each axis,
+        by default 0
+    reflect_type{'even', 'odd'}, optional
+        Used in 'reflect', and 'symmetric'. The 'even' style is the default 
+        with an unaltered reflection around the edge value. For the 'odd' 
+        style, the extended part of the array is created by subtracting the 
+        reflected values from two times the edge value.
     axis : int, optional
-        axis to mirror, by default -1
-    prepend : bool, optional
-        Typically, a signal is appended to the rear (right) of the signal. This option prepends the signal. By default False
+        Axis to apply padding, by default -1
+    kwargs : dict, optional
+        Sent to numpy.pad
+
+    Returns
+    -------
+    tuple
+        (Padded x, window)
     """
 
-    if not prepend:
-        return np.append(x, np.flip(x, axis=axis), axis=axis)
+    pad_list = _make_pad_list(x.ndim, pad_width, axis)
+    window = _make_pad_window(x.shape[axis], pad_width)
+
+    # * All these checks are dumb, but np.pad has enforced requirements
+    # * on keywords and modes
+    if mode == 'constant':
+        x_pad = np.pad(array=x, pad_width=pad_list, mode=mode, 
+                       constant_values=constant_values, 
+                       **kwargs)
+    elif mode in ['mean', 'median', 'maximum', 'minimum']:
+        x_pad = np.pad(array=x, pad_width=pad_list, mode=mode, 
+                       stat_length=stat_length, **kwargs)
+    elif mode in ['reflect', 'symmetric']:
+        x_pad = np.pad(array=x, pad_width=pad_list, mode=mode, 
+                       reflect_type=reflect_type, **kwargs)
     else:
-        return np.append(np.flip(x, axis=axis), x, axis=axis)
+        x_pad = np.pad(array=x, pad_width=pad_list, mode=mode, **kwargs)
+
+    return (x_pad, window)
+
+    
