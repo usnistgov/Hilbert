@@ -15,20 +15,40 @@
 Hilbert - Discrete Hilbert Transform Implementations
 ============================================================
 
-**Hilbert** is a project that will contain numerous implementations of the discrete Hilbert transform.
+**Hilbert** is a project that will contain numerous implementations (and 
+approximations) of the discrete Hilbert transform.
 
-Currently, this package is a work in progress and should probably not be used. *hilbertfft* is the
-same as that implemented in `CRIkit2<https://github.com/CCampJr/CRIkit2/blob/master/crikit/cri/algorithms/kk.py>`_
+Currently, this package is a work in progress and should probably **not be used**. 
 
+Currently Implemented
+----------------------
+
+-   Discrete Fourier Transform-based
+
+    -   Henrici [1]_
+    -   Marple (SciPy and MATLAB's *hilbert* implementation) [2]_
+    -   Haar wavelet-based (similar to Zhou-Yang [3]_)
+
+References
+~~~~~~~~~~~
+
+.. [1] P. Henrici, Applied and Computational Complex Analysis Vol III 
+       (Wiley-Interscience, 1986).
+        
+.. [2] L. Marple, "Computing the discrete-time “analytic” signal via FFT," 
+       IEEE Trans. Signal Process. 47(9), 2600–2603 (1999).
+
+.. [3] C. Zhou, L. Yang, Y. Liu, and Z. Yang, "A novel method for computing 
+       the Hilbert transform with Haar multiresolution approximation," J. Comput. 
+       Appl. Math. 223(2), 585–597 (2009).
 
 Coming Soon
 ------------
 
 -   Implementations
 
-    -   Marple FFT-based
     -   B-splines implementation (Bilato)
-    -   Haar multiresolution
+    -   Haar multiresolution (Zhou-Yang)
     -   Sinc / Whittaker Cardinal
     -   and more!
 
@@ -71,9 +91,10 @@ OTHERWISE, WHETHER OR NOT INJURY WAS SUSTAINED BY PERSONS OR PROPERTY OR
 OTHERWISE, AND WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT OF THE 
 RESULTS OF, OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
 
-Portions of this package include source code edited from the `sklearn's project template<
-https://github.com/scikit-learn-contrib/project-template/blob/master/doc/index.rst>`_, which
+Portions of this package include source code edited from the `sklearn's project template`_, which
 requires the following notice(s):
+
+.. _sklearn's project template: https://github.com/scikit-learn-contrib/project-template/blob/master/doc/index.rst
 
 Copyright (c) 2016, Vighnesh Birodkar and scikit-learn-contrib contributors
 All rights reserved.
