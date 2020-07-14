@@ -27,15 +27,20 @@ Currently Implemented
 
     -   Henrici [1]_
     -   Marple (SciPy and MATLAB's *hilbert* implementation) [2]_
+    -   Haar wavelet-based (similar to Zhou-Yang [3]_)
 
 References
 ~~~~~~~~~~~
 
 .. [1] P. Henrici, Applied and Computational Complex Analysis Vol III 
-        (Wiley-Interscience, 1986).
+       (Wiley-Interscience, 1986).
         
 .. [2] L. Marple, "Computing the discrete-time “analytic” signal via FFT," 
-        IEEE Trans. Signal Process. 47(9), 2600–2603 (1999).
+       IEEE Trans. Signal Process. 47(9), 2600–2603 (1999).
+
+.. [3] C. Zhou, L. Yang, Y. Liu, and Z. Yang, "A novel method for computing 
+       the Hilbert transform with Haar multiresolution approximation," J. Comput. 
+       Appl. Math. 223(2), 585–597 (2009).
 
 Coming Soon
 ------------
