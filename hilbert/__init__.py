@@ -1,4 +1,6 @@
 from .dft import hilbert_fft_henrici, hilbert_fft_marple
+from .wavelet import hilbert_haar
+
 from .preprocess import pad_edge_mean, mirror
 
 from ._version import __version__
