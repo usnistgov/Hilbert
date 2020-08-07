@@ -64,6 +64,7 @@ class AbstractRandomTrainingDataGenerator(ABC):
         self.Hf_ = None
         self.conditions_ = None
         
+        self.generate_conditions()
         self.generate()
     
     def _ret_val_fcn(self, value):
@@ -103,40 +104,78 @@ class AbstractRandomTrainingDataGenerator(ABC):
     def max_ctr(self, width):
         return self.n.max() - self.config['m_widths_from_edge']*width
 
+    # def generate_conditions(self):
+    #     conditions_vec = []
+
+    #     # ! Old version which turns out to not equally sample the 
+    #     # ! width-center  space
+
+    #     for _ in range(self.n_samples):
+    #         a = self._amp_fcn()
+    #         # width = (self.max_width - self.min_width) * np.random.rand(1)[0] + \
+    #         #          self.min_width
+    #         width = self._width_fcn()
+    #         max_ctr = self.max_ctr(width)
+    #         min_ctr = self.min_ctr(width)
+    #         if max_ctr < min_ctr:
+    #             raise ValueError('Max-Min Center is not possible: {},{}. Check config[m_widths_from_edge]'.format(min_ctr, max_ctr))
+
+    #         if self._center_fcn is None:
+    #             ctr = (max_ctr - min_ctr) * np.random.rand(1)[0] + min_ctr
+    #         else:
+    #             ctr = self._center_fcn()
+    #             if ctr < min_ctr:
+    #                 ctr = min_ctr
+    #                 print('Warning: ctr < min_ctr. Setting to min_ctr...')
+    #             if ctr > max_ctr:
+    #                 ctr = max_ctr
+    #                 print('Warning: ctr > max_ctr. Setting to max_ctr...')
+
+    #         conditions_vec.append([a, ctr, width])
+    #     self.conditions_ = np.array(conditions_vec)     
+
     def generate_conditions(self):
-        conditions_vec = []
+        """Generate amplitude, width, center conditions for simulation"""
 
-        # TODO: width and ctr as fcn's that can be user-set. If None, revert to the given limits
+        # TODO: Refactor for improved memory usage
+                
+        ctr_list = []
+        amp_list = []
+        width_list = []
 
-        for _ in range(self.n_samples):
-            a = self._amp_fcn()
-            # width = (self.max_width - self.min_width) * np.random.rand(1)[0] + \
-            #          self.min_width
-            width = self._width_fcn()
-            max_ctr = self.max_ctr(width)
-            min_ctr = self.min_ctr(width)
-            if max_ctr < min_ctr:
-                raise ValueError('Max-Min Center is not possible: {},{}. Check config[m_widths_from_edge]'.format(min_ctr, max_ctr))
+        remaining_samples = self.n_samples
+        
+        while remaining_samples > 0:
+            temp_widths = np.array([self._width_fcn() for _ in range(remaining_samples)])
+            
+            temp_amps = np.array([self._amp_fcn() for _ in range(remaining_samples)])
+            max_ctr = self.max_ctr(self.min_width)
+            min_ctr = self.min_ctr(self.min_width)
 
             if self._center_fcn is None:
-                ctr = (max_ctr - min_ctr) * np.random.rand(1)[0] + min_ctr
+                temp_ctrs = (max_ctr - min_ctr) * np.random.rand(remaining_samples) + min_ctr
             else:
-                ctr = self._center_fcn()
-                if ctr < min_ctr:
-                    ctr = min_ctr
-                    print('Warning: ctr < min_ctr. Setting to min_ctr...')
-                if ctr > max_ctr:
-                    ctr = max_ctr
-                    print('Warning: ctr > max_ctr. Setting to max_ctr...')
-
-            conditions_vec.append([a, ctr, width])
-        self.conditions_ = np.array(conditions_vec)           
+                temp_ctrs = np.array([self._center_fcn() for _ in range(remaining_samples)])
+                                
+            idx_list= []
+            for num, (w,c) in enumerate(zip(temp_widths, temp_ctrs)):
+                if ((c >= self.min_ctr(w)) & (c <= self.max_ctr(w))):
+                    idx_list.append(num)
+            temp_ctrs = temp_ctrs[idx_list]
+            temp_amps = temp_amps[idx_list]
+            temp_widths = temp_widths[idx_list]
+            
+            ctr_list.extend(temp_ctrs.tolist())
+            width_list.extend(temp_widths.tolist())
+            amp_list.extend(temp_amps.tolist())
+            
+            remaining_samples -= temp_ctrs.size
+            self.conditions_ = np.vstack((amp_list, ctr_list, width_list)).T     
 
     def generate(self):      
         f = []
         Hf = []
         
-        self.generate_conditions()
         temp = self.fcn(self.n, self.conditions_)
         
         f = temp.real

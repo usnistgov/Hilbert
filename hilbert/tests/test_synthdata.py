@@ -131,7 +131,7 @@ def test_Gaussian_amp():
     assert np.alltrue((out.f_.max(axis=-1)>=2) &
                       (out.f_.max(axis=-1)<4))
     assert np.alltrue((out.Hf_.max(axis=-1)>=2*f_max_to_Hf_max_factor) &
-                      (out.Hf_.max(axis=-1)<4*f_max_to_Hf_max_factor))
+                      (out.Hf_.max(axis=-1)<4.1*f_max_to_Hf_max_factor))
 
     out = GaussianTrainingData(n, stack_Hf_f=False, n_samples=101, 
                                  random_state=0, amp=lambda: 10*np.random.rand(1)[0]+3)
@@ -152,7 +152,7 @@ def test_Sinc_amp():
     isinstance(out.conditions_[0,2], float)
     assert np.alltrue(out.f_.max(axis=-1)>=0.9), \
                       '{}'.format(out.f_.max(axis=-1)[out.f_.max(axis=-1)<0.9])
-    assert np.alltrue(out.Hf_.max(axis=-1)>=0.65), \
+    assert np.alltrue(out.Hf_.max(axis=-1)>=0.64), \
                       '{}'.format(out.Hf_.max(axis=-1)[out.Hf_.max(axis=-1)<0.65])
 
     out = SincTrainingData(n, stack_Hf_f=False, n_samples=1001, 
@@ -164,7 +164,7 @@ def test_Sinc_amp():
     assert np.alltrue(out.f_.max(axis=-1)>=1.8), \
                       '{}'.format(out.f_.max(axis=-1)[out.f_.max(axis=-1)<1.8])
 
-    assert np.alltrue(out.Hf_.max(axis=-1)>=1.35), \
+    assert np.alltrue(out.Hf_.max(axis=-1)>=1.28), \
                       '{}'.format(out.Hf_.max(axis=-1)[out.Hf_.max(axis=-1)<1.35])
 
     out = SincTrainingData(n, stack_Hf_f=False, n_samples=101, 
