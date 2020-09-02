@@ -13,6 +13,6 @@ hilbert_fft = hilbert_fft_henrici
 
 __all__ = ['hilbert_fft', 'hilbert_fft_marple', 'hilbert_fft_henrici', 
            '__version__', 'MLHilb', 'GaussianTrainingData',
-           'LorentzianTrainingData', 'SincTrainingData', 'VoigtTrainingData',
+           'LorentzianTrainingData', 'SincTrainingData',
            '__version__', 'pad', 'depad', 'hilbert_pad_wrap',
             'hilbert_pad_simple','rss','mse']
