@@ -19,13 +19,19 @@ class AbstractRandomTrainingDataGenerator(ABC):
     n : array-like, shape (n_features,)
         The independent variable
     stack_Hf_f : bool, optional
-        Stack Hf -f in the results, by default True
+        Stack Hf -f in the results, by default False
     n_samples : int, optional
         Number of samples to generate, by default 1000
     random_state : int, optional
         Random number generator seed, by default None
     amp : float, list, or function-like
         Amplitude constant, list of [min,max) for uniform distribution, 
+        or function to generate an amplitude.
+    center : float, list, or function-like
+        Center-n constant, list of [min,max) for uniform distribution, 
+        or function to generate an amplitude.
+    width : float, list, or function-like
+        Width constant, list of [min,max) for uniform distribution, 
         or function to generate an amplitude.
     
     Attributes
@@ -43,18 +49,22 @@ class AbstractRandomTrainingDataGenerator(ABC):
              }
     
     def __init__(self, n, stack_Hf_f=False, n_samples=1000, random_state=None, 
-                 amp=1., center=None, width=None):     
+                 amp=1., center=None, width=None):   
+        
+        # Whether to re-update after changing params
+        # Before all params are initially set, we don't want this
+        self._can_update = False  
         self.n = n
-        self._amp_fcn = self._ret_val_fcn(amp)
-        if width is None:
-            self._width_fcn = self._ret_val_fcn([self.min_width, self.max_width])
-        else:
-            self._width_fcn = self._ret_val_fcn(width)
-        if center is None:
-            self._center_fcn = None
-        else:
-            self._center_fcn = self._ret_val_fcn(center)
 
+        self._amp = None
+        self._width = None
+        self._center = None
+        self._n_samples = None
+        self._stack_Hf_f = None
+
+        self.amp = amp
+        self.width = width
+        self.center = center
         self.n_samples = n_samples
         self.stack_Hf_f = stack_Hf_f
         
@@ -66,7 +76,72 @@ class AbstractRandomTrainingDataGenerator(ABC):
         
         self.generate_conditions()
         self.generate()
+
+        self._can_update = True
     
+    def regenerate(self):
+        if self._can_update:
+            self.generate_conditions()
+            self.generate()
+
+    @property
+    def stack_Hf_f(self):
+        return self._stack_Hf_f
+
+    @stack_Hf_f.setter
+    def stack_Hf_f(self, value):
+        self._stack_Hf_f = value
+        self.regenerate()
+
+    @property
+    def n_samples(self):
+        return self._n_samples
+
+    @n_samples.setter
+    def n_samples(self, value):
+        self._n_samples = value
+        self.regenerate()
+
+    @property
+    def amp(self):
+        return self._amp
+
+    @amp.setter
+    def amp(self, value):
+        self._amp = value
+        self._amp_fcn = self._ret_val_fcn(self._amp)
+        self.regenerate()
+
+    @property
+    def width(self):
+        return self._width
+
+    @width.setter
+    def width(self, value):
+        self._width = value
+
+        if self._width is None:
+            self._width_fcn = self._ret_val_fcn([self.min_width, self.max_width])
+        else:
+            self._width_fcn = self._ret_val_fcn(self._width)
+        
+        self.regenerate()
+
+    @property
+    def center(self):
+        return self._center
+
+    @center.setter
+    def center(self, value):
+        self._center = value
+
+        if self._center is None:
+            self._center_fcn = None
+        else:
+            self._center_fcn = self._ret_val_fcn(self._center)
+
+        self.regenerate()
+
     def _ret_val_fcn(self, value):
         if isinstance(value, float):
             return lambda value=value: value
@@ -103,36 +178,6 @@ class AbstractRandomTrainingDataGenerator(ABC):
 
     def max_ctr(self, width):
         return self.n.max() - self.config['m_widths_from_edge']*width
-
-    # def generate_conditions(self):
-    #     conditions_vec = []
-
-    #     # ! Old version which turns out to not equally sample the 
-    #     # ! width-center  space
-
-    #     for _ in range(self.n_samples):
-    #         a = self._amp_fcn()
-    #         # width = (self.max_width - self.min_width) * np.random.rand(1)[0] + \
-    #         #          self.min_width
-    #         width = self._width_fcn()
-    #         max_ctr = self.max_ctr(width)
-    #         min_ctr = self.min_ctr(width)
-    #         if max_ctr < min_ctr:
-    #             raise ValueError('Max-Min Center is not possible: {},{}. Check config[m_widths_from_edge]'.format(min_ctr, max_ctr))
-
-    #         if self._center_fcn is None:
-    #             ctr = (max_ctr - min_ctr) * np.random.rand(1)[0] + min_ctr
-    #         else:
-    #             ctr = self._center_fcn()
-    #             if ctr < min_ctr:
-    #                 ctr = min_ctr
-    #                 print('Warning: ctr < min_ctr. Setting to min_ctr...')
-    #             if ctr > max_ctr:
-    #                 ctr = max_ctr
-    #                 print('Warning: ctr > max_ctr. Setting to max_ctr...')
-
-    #         conditions_vec.append([a, ctr, width])
-    #     self.conditions_ = np.array(conditions_vec)     
 
     def generate_conditions(self):
         """Generate amplitude, width, center conditions for simulation"""
@@ -398,74 +443,58 @@ class SincTrainingData(AbstractRandomTrainingDataGenerator):
 
         return amp*np.sinc(2*f*(n-ctr)) + 1j*amp*((1-np.cos(2*f*np.pi*(n-ctr)))/denom)
         
-   
-# class VoigtTrainingData(AbstractRandomTrainingDataGenerator):
-#     m_widths = 2
-#     # AbstractTrainingDataGenerator.config['n_fwhm_is_max_width'] = 4
-            
-#     @classmethod
-#     def fcn(cls, n, cmat):
-#         """ Returns a Voigt (real part) and its Hilbert transform (imag part) """
+class SyntheticSpectra:
+    """Generate synthetic spectra/signals
+
+        Parameters
+        ----------
+        n : array-like, shape (n_features,)
+            The independent variable
+        lineshape_inst : instance subclassed from AbstractRandomTrainingDataGenerator
+            Instance of a class that generates lineshapes and their Hilbert 
+            transform, example:
+            LorentzianTrainingData(n, n_samples=10, amp=[0.1, 3.0], 
+                                   center=None, width=[1.2, 15])
+        n_spectra : int, optional
+            Number of spectra/signal to generate, by default 100
+        n_peak_lims : list of 2 ints, optional
+            [Min, Max) number of peaks that can be in a single spectrum, 
+            by default [1,30]
+        """              
+    def __init__(self, lineshape_inst, n_spectra=100, n_peak_lims=[1,30], 
+                 f_is_even=True):    
+           
+        self.n_spectra = n_spectra
+        self.n_peak_lims = n_peak_lims
+        self.f_is_even = f_is_even
+               
+        self.f_ = []
+        self.Hf_ = []
+        self.n_peaks_ = []
+        self.conditions_ = []
         
-#         cmat = cls._check_cmat_shape(cmat)
-#         amp = cmat[:,0][:,None]
-#         ctr = cmat[:,1][:,None]
-#         width_lorentz = cmat[:,2][:,None]
-#         width_gaussian = cmat[:,3][:,None]
-        
-#         z = ((n-ctr)+1j*width_lorentz)/(width_gaussian*np.sqrt(2))
-#         z0 = (0+1j*width_lorentz)/(width_gaussian*np.sqrt(2))
-#         return amp*wofz(z)/wofz(z0)
+        for num in range(n_spectra):
+            n_peaks = np.random.randint(self.n_peak_lims[0], 
+                                        self.n_peak_lims[1])
+            self.n_peaks_.append(n_peaks)
+            lineshape_inst.n_samples = n_peaks
+            self.conditions_.append(lineshape_inst.conditions_)
 
-#     @classmethod
-#     def fwhm(cls, width_g, width_l):
-#         """ Approximate FWHM """
-#         fwhm_l = LorentzianTrainingData.fwhm(width_l)
-#         fwhm_g = GaussianTrainingData.fwhm(width_g)
+            if self.f_is_even:
+                self.f_.append(lineshape_inst.f_.sum(axis=0))
+                self.Hf_.append(lineshape_inst.Hf_.sum(axis=0))
+            else:
+                self.f_.append(-lineshape_inst.Hf_.sum(axis=0))
+                self.Hf_.append(lineshape_inst.f_.sum(axis=0))
+        self.f_ = np.array(self.f_)
+        self.Hf_ = np.array(self.Hf_)
 
-#         return fwhm_l/2 + np.sqrt(fwhm_l**2/4 + fwhm_g**2)
-
-#     @property
-#     def min_width(self):
-#         """ Minimum resolvable width. We'll just say it's one period."""
-#         return 2 / (3*self.dn)
-    
 
 if __name__ == '__main__':
     n = np.linspace(-100,100,1001)
     out = LorentzianTrainingData(n, stack_Hf_f=False, n_samples=1000, 
                                  random_state=0, amp=lambda: 1, width=[1,20.])
 
-    # print(out.Hf_.max(axis=-1).min())
-    # assert np.alltrue(out.Hf_.max(axis=-1) > 0.45)
-
-    # assert np.alltrue(out.f_.max(axis=-1)>=0.9), \
-    #                   '{}'.format(out.f_.max(axis=-1)[out.f_.max(axis=-1)<0.9])
-
-    # out = LorentzianTrainingData(n, stack_Hf_f=False, n_samples=1001, 
-    #                              random_state=0, amp=2)
-    
-    # assert np.alltrue(out.f_.max(axis=-1)>=1.8), \
-    #                   '{}'.format(out.f_.max(axis=-1)[out.f_.max(axis=-1)<1.8])
-    # out = LorentzianTrainingData(n, stack_Hf_f=False, n_samples=101, 
-    #                              random_state=0, amp=[2.,4.])
-    # assert np.alltrue((out.f_.max(axis=-1)>=2) &
-    #                   (out.f_.max(axis=-1)<4))
-
-    # out = LorentzianTrainingData(n, stack_Hf_f=False, n_samples=101, 
-    #                              random_state=0, amp=lambda: 10*np.random.rand(1)[0]+3)
-    # assert np.alltrue((out.f_.max(axis=-1)>=3) &
-    #                   (out.f_.max(axis=-1)<13))
-
-    
-    # print(out.f_.max(axis=-1))
-    
-
-    # out = LorentzianTrainingData(n, stack_Hf_f=False, n_samples=11, amp=2)
-    # assert np.allclose(out.f_.max(axis=-1),1)
-    
-    # out = LorentzianTrainingData(n, stack_Hf_f=False, n_samples=1001, amp=[0,1])
-    # assert print(out.f_)
     
 
 

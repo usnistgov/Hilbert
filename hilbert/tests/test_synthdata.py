@@ -181,3 +181,98 @@ def test_Sinc_amp():
                                  random_state=0, amp=lambda: 10*np.random.rand(1)[0]+3)
     assert np.alltrue((out.f_.max(axis=-1)>=3) &
                       (out.f_.max(axis=-1)<13))
+
+def test_dynamic_update_from_ABC_class():
+    """ Make sure when certain properties are changed, the whole synthetic 
+    dataset is regenerated """
+
+    n = np.linspace(-100,100,100001)
+    dn = n[1] - n[0]
+    
+    # Changing n_samples
+    n_samples_1 = 11
+    n_samples_2 = 21
+    lords = LorentzianTrainingData(n, n_samples=n_samples_1)
+    assert lords.f_.shape[0] == n_samples_1
+    assert lords.Hf_.shape[0] == n_samples_1
+
+    lords.n_samples = n_samples_2
+    assert lords.f_.shape[0] == n_samples_2
+    assert lords.Hf_.shape[0] == n_samples_2
+
+    del n_samples_1, n_samples_2, lords
+
+    # stack_Hf_f=False, n_samples=1000, random_state=None, 
+    #              amp=1., center=None, width=None
+
+    # Changing stack_Hf_f
+    n_samples_1 = 11
+    lords = LorentzianTrainingData(n, n_samples=n_samples_1)
+    assert lords.stack_Hf_f == False
+    assert lords.f_.shape[0] == n_samples_1
+    assert lords.Hf_.shape[0] == n_samples_1
+
+    lords.stack_Hf_f = True
+    assert lords.f_.shape[0] == n_samples_1*2
+    assert lords.Hf_.shape[0] == n_samples_1*2
+
+    del n_samples_1, lords
+
+    # Changing amp
+    n_samples_1 = 11
+    lords = LorentzianTrainingData(n, n_samples=n_samples_1, amp=1.0, 
+                                   center=[-10.,10.])
+    assert lords.f_.shape[0] == n_samples_1
+    assert lords.Hf_.shape[0] == n_samples_1
+    assert np.allclose(lords.f_.max(axis=-1), 1.0)
+
+    lords.amp = 2.0
+    assert lords.f_.shape[0] == n_samples_1
+    assert lords.Hf_.shape[0] == n_samples_1
+    assert np.allclose(lords.f_.max(axis=-1), 2.0)
+
+    del n_samples_1, lords
+
+    # Changing center
+    n_samples_1 = 11
+    lords = LorentzianTrainingData(n, n_samples=n_samples_1, center=0.0)
+    temp = 1.0*lords.f_
+    assert np.allclose(temp, lords.f_)
+
+    lords.center = 10.0
+    assert not np.allclose(temp, lords.f_)
+
+    del n_samples_1, lords
+
+    # Changing width
+    n_samples_1 = 11
+    lords = LorentzianTrainingData(n, n_samples=n_samples_1, width=10.0)
+    temp = 1.0*lords.f_
+    assert np.allclose(temp, lords.f_)
+
+    lords.width = 20.0
+    assert not np.allclose(temp, lords.f_)
+
+    del n_samples_1, lords
+
+    # Regenerate
+    n_samples_1 = 11
+    lords = LorentzianTrainingData(n, n_samples=n_samples_1, width=10.0)
+    temp = 1.0*lords.f_
+    assert np.allclose(temp, lords.f_)
+
+    lords.regenerate()
+    assert not np.allclose(temp, lords.f_)
+
+    del n_samples_1, lords
+
+    # Re-writing n_samples with same value -- to see if it changed
+    n_samples_1 = 11
+    lords = LorentzianTrainingData(n, n_samples=n_samples_1)
+    temp = 1.0*lords.f_
+    assert np.allclose(temp, lords.f_)
+
+    lords.n_samples = n_samples_1
+    assert not np.allclose(temp, lords.f_)
+
+    del n_samples_1, lords
