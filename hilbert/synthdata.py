@@ -464,30 +464,81 @@ class SyntheticSpectra:
     def __init__(self, lineshape_inst, n_spectra=100, n_peak_lims=[1,30], 
                  f_is_even=True):    
            
+        self._can_update = False 
+
+        self._lineshape_inst = lineshape_inst
+        self._n_spectra = None
+        self._n_peak_lims = None
+        self._f_is_even = None
+
         self.n_spectra = n_spectra
         self.n_peak_lims = n_peak_lims
         self.f_is_even = f_is_even
-               
+        self.lineshape_inst = lineshape_inst
+        self._can_update = True 
+        
+        self.regenerate()
+        
+
+    def regenerate(self):
+        if not self._can_update:
+            return None
         self.f_ = []
         self.Hf_ = []
         self.n_peaks_ = []
         self.conditions_ = []
         
-        for num in range(n_spectra):
+        for num in range(self.n_spectra):
             n_peaks = np.random.randint(self.n_peak_lims[0], 
                                         self.n_peak_lims[1])
             self.n_peaks_.append(n_peaks)
-            lineshape_inst.n_samples = n_peaks
-            self.conditions_.append(lineshape_inst.conditions_)
+            self.lineshape_inst.n_samples = n_peaks
+            self.conditions_.append(self.lineshape_inst.conditions_)
 
             if self.f_is_even:
-                self.f_.append(lineshape_inst.f_.sum(axis=0))
-                self.Hf_.append(lineshape_inst.Hf_.sum(axis=0))
+                self.f_.append(self.lineshape_inst.f_.sum(axis=0))
+                self.Hf_.append(self.lineshape_inst.Hf_.sum(axis=0))
             else:
-                self.f_.append(-lineshape_inst.Hf_.sum(axis=0))
-                self.Hf_.append(lineshape_inst.f_.sum(axis=0))
+                self.f_.append(-self.lineshape_inst.Hf_.sum(axis=0))
+                self.Hf_.append(self.lineshape_inst.f_.sum(axis=0))
         self.f_ = np.array(self.f_)
         self.Hf_ = np.array(self.Hf_)
+
+    @property
+    def lineshape_inst(self):
+        return self._lineshape_inst
+
+    @lineshape_inst.setter
+    def lineshape_inst(self, value):
+        self._lineshape_inst = value
+        self.regenerate()
+
+    @property
+    def n_spectra(self):
+        return self._n_spectra
+
+    @n_spectra.setter
+    def n_spectra(self, value):
+        self._n_spectra = value
+        self.regenerate()
+
+    @property
+    def n_peak_lims(self):
+        return self._n_peak_lims
+
+    @n_peak_lims.setter
+    def n_peak_lims(self, value):
+        self._n_peak_lims = value
+        self.regenerate()
+
+    @property
+    def f_is_even(self):
+        return self._f_is_even
+
+    @f_is_even.setter
+    def f_is_even(self, value):
+        self._f_is_even = value
+        self.regenerate()
 
 
 if __name__ == '__main__':
