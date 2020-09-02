@@ -80,6 +80,7 @@ class AbstractRandomTrainingDataGenerator(ABC):
         self._can_update = True
     
     def regenerate(self):
+        """Create new conditions and regenerate f_ and Hf"""
         if self._can_update:
             self.generate_conditions()
             self.generate()
@@ -218,6 +219,7 @@ class AbstractRandomTrainingDataGenerator(ABC):
             self.conditions_ = np.vstack((amp_list, ctr_list, width_list)).T     
 
     def generate(self):      
+        """Generate f_ and Hf_ based on self.conditions"""
         f = []
         Hf = []
         
@@ -476,11 +478,12 @@ class SyntheticSpectra:
         self.f_is_even = f_is_even
         self.lineshape_inst = lineshape_inst
         self._can_update = True 
-        
+
         self.regenerate()
         
 
     def regenerate(self):
+        """ Regenerate new set of spectra/signals"""
         if not self._can_update:
             return None
         self.f_ = []
