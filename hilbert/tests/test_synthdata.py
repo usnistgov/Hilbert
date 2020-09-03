@@ -299,3 +299,52 @@ def test_synthspectra():
     assert synthspect.f_.shape[0] == n_spectra
     assert synthspect.f_.shape[1] == n.size
     assert not np.allclose(temp, synthspect.f_)
+
+
+def test_amp_lims():
+    """ Testing to make sure that the amp setting does what it's supposed to do.
+    Using Lorentzian as a proxy for the Abtsract class"""
+
+    n_spectra = 10
+    n = np.linspace(-100,100,1001)
+
+    # Constant
+    lineshape_inst = LorentzianTrainingData(n, n_samples=1, amp=1.0)
+    assert np.allclose(lineshape_inst.conditions_[:,0], 1.0)
+
+    # Range [min, max)
+    lineshape_inst = LorentzianTrainingData(n, n_samples=1, amp=[0.0, 1.0])
+    assert np.alltrue(lineshape_inst.conditions_[:,0] < 1.0)
+    assert np.alltrue(lineshape_inst.conditions_[:,0] >= 0.0)
+
+def test_width_lims():
+    """ Testing to make sure that the width setting does what it's supposed to
+     do. Using Lorentzian as a proxy for the Abtsract class"""
+
+    n_spectra = 10
+    n = np.linspace(-100,100,1001)
+
+    # Constant
+    lineshape_inst = LorentzianTrainingData(n, n_samples=1, width=10.0)
+    assert np.allclose(lineshape_inst.conditions_[:,2], 10.0)
+
+    # Range [min, max)
+    lineshape_inst = LorentzianTrainingData(n, n_samples=1, width=[1.0, 10.0])
+    assert np.alltrue(lineshape_inst.conditions_[:,2] < 10.0)
+    assert np.alltrue(lineshape_inst.conditions_[:,2] >= 1.0)
+
+def test_center_lims():
+    """ Testing to make sure that the center setting does what it's supposed to
+     do. Using Lorentzian as a proxy for the Abtsract class"""
+
+    n_spectra = 10
+    n = np.linspace(-100,100,1001)
+
+    # Constant
+    lineshape_inst = LorentzianTrainingData(n, n_samples=1, center=10.0)
+    assert np.allclose(lineshape_inst.conditions_[:,1], 10.0)
+
+    # Range [min, max)
+    lineshape_inst = LorentzianTrainingData(n, n_samples=1, center=[1.0, 10.0])
+    assert np.alltrue(lineshape_inst.conditions_[:,1] < 10.0)
+    assert np.alltrue(lineshape_inst.conditions_[:,1] >= 1.0)
