@@ -546,12 +546,6 @@ class SyntheticSpectra:
         self.regenerate()
 
 
-if __name__ == '__main__':
-    n = np.linspace(-100,100,1001)
-    out = LorentzianTrainingData(n, stack_Hf_f=False, n_samples=1000,
-                                 random_state=0, amp=lambda: 1, width=[1,20.])
-
-
 
 
 
