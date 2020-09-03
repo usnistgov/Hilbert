@@ -58,3 +58,22 @@ def rss(y_true, y_pred, mean_centered=False, axis=-1):
         return np.sum(((y_true - y_true.mean(axis=axis, keepdims=True)) - 
                        (y_pred - y_pred.mean(axis=axis, keepdims=True)))**2, 
                       axis=axis)
+
+def mlhilb_scorer(estimator, X, y_true, *args, **kwargs):
+    """A customized scorer for mlhilb"""
+    
+    # TODO: turn this into a class so weights can be altered
+    weight = {'mean':0.0, 'median':1.0, 'min':1.0, 'max':1.0, 'std':1.0}
+    
+    y_pred = estimator.predict(X)
+    mse_out = mse(y_true, y_pred, mean_centered=True)
+    score = 0.0
+    score += weight['mean']*np.log10(np.mean(mse_out))
+    score += weight['median']*np.log10(np.median(mse_out))
+    score += weight['max']*np.log10(np.max(mse_out) - np.median(mse_out))
+    score += weight['std']*np.log10(np.std(mse_out))
+    score += weight['min']*np.log10(np.median(mse_out) - np.min(mse_out))
+    
+    # For scorers, bigger is BETTER; thus, we have to negate our score
+    # b/c for it, smaller is better
+    return -score
