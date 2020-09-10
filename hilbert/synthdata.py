@@ -16,12 +16,8 @@ class AbstractRandomTrainingDataGenerator(ABC):
     ----------
     n : array-like, shape (n_features,)
         The independent variable
-    stack_Hf_f : bool, optional
-        Stack Hf -f in the results, by default False
     n_samples : int, optional
         Number of samples to generate, by default 1000
-    random_state : int, optional
-        Random number generator seed, by default None
     amp : float, list, or function-like
         Amplitude constant, list of [min,max) for uniform distribution,
         or function to generate an amplitude.
@@ -31,6 +27,13 @@ class AbstractRandomTrainingDataGenerator(ABC):
     width : float, list, or function-like
         Width constant, list of [min,max) for uniform distribution,
         or function to generate an amplitude.
+    random_state : int, optional
+        Random number generator seed, by default None
+    f_is_even : bool, optional
+        Whether f is an even function (ergo Hf is odd) or vice versa, by 
+        default True
+    stack_Hf_f : bool, optional
+        Stack Hf -f in the results, by default False
 
     Attributes
     ----------
@@ -46,8 +49,9 @@ class AbstractRandomTrainingDataGenerator(ABC):
               'width_over_dn_is_min_width' : 3 / m_width_is_fwhm  # min FWHM = 3 dn
              }
 
-    def __init__(self, n, stack_Hf_f=False, n_samples=1000, random_state=None,
-                 amp=1., center=None, width=None):
+    def __init__(self, n, n_samples=1000, amp=1., center=None, width=None,
+                 random_state=None, f_is_even=True, stack_Hf_f=False
+                 ):
 
         # Whether to re-update after changing params
         # Before all params are initially set, we don't want this
@@ -59,6 +63,7 @@ class AbstractRandomTrainingDataGenerator(ABC):
         self._center = None
         self._n_samples = None
         self._stack_Hf_f = None
+        self._f_is_even = None
 
         self._amp_fcn = None
         self._width_fcn = None
@@ -69,6 +74,7 @@ class AbstractRandomTrainingDataGenerator(ABC):
         self.center = center
         self.n_samples = n_samples
         self.stack_Hf_f = stack_Hf_f
+        self.f_is_even = f_is_even
 
         np.random.seed(random_state)
 
@@ -86,6 +92,15 @@ class AbstractRandomTrainingDataGenerator(ABC):
         if self._can_update:
             self.generate_conditions()
             self.generate()
+
+    @property
+    def f_is_even(self):
+        return self._f_is_even
+
+    @f_is_even.setter
+    def f_is_even(self, value):
+        self._f_is_even = value
+        self.regenerate()
 
     @property
     def stack_Hf_f(self):
@@ -227,8 +242,13 @@ class AbstractRandomTrainingDataGenerator(ABC):
 
         temp = self.fcn(self.n, self.conditions_)
 
-        f = temp.real
-        Hf = temp.imag
+        if self.f_is_even:
+            f = temp.real
+            Hf = temp.imag
+        else:
+            f = -temp.imag
+            Hf = temp.real
+
         del temp
 
         if self.stack_Hf_f:
@@ -273,15 +293,24 @@ class LorentzianTrainingData(AbstractRandomTrainingDataGenerator):
     ----------
     n : array-like, shape (n_features,)
         The independent variable
-    stack_Hf_f : bool, optional
-        Stack Hf -f in the results, by default True
     n_samples : int, optional
         Number of samples to generate, by default 1000
-    random_state : int, optional
-        Random number generator seed, by default None
     amp : float, list, or function-like
         Amplitude constant, list of [min,max) for uniform distribution,
         or function to generate an amplitude.
+    center : float, list, or function-like
+        Center-n constant, list of [min,max) for uniform distribution,
+        or function to generate an amplitude.
+    width : float, list, or function-like
+        Width constant, list of [min,max) for uniform distribution,
+        or function to generate an amplitude.
+    random_state : int, optional
+        Random number generator seed, by default None
+    f_is_even : bool, optional
+        Whether f is an even function (ergo Hf is odd) or vice versa, by 
+        default True
+    stack_Hf_f : bool, optional
+        Stack Hf -f in the results, by default False
 
     Attributes
     ----------
@@ -337,15 +366,24 @@ class GaussianTrainingData(AbstractRandomTrainingDataGenerator):
     ----------
     n : array-like, shape (n_features,)
         The independent variable
-    stack_Hf_f : bool, optional
-        Stack Hf -f in the results, by default True
     n_samples : int, optional
         Number of samples to generate, by default 1000
-    random_state : int, optional
-        Random number generator seed, by default None
     amp : float, list, or function-like
         Amplitude constant, list of [min,max) for uniform distribution,
         or function to generate an amplitude.
+    center : float, list, or function-like
+        Center-n constant, list of [min,max) for uniform distribution,
+        or function to generate an amplitude.
+    width : float, list, or function-like
+        Width constant, list of [min,max) for uniform distribution,
+        or function to generate an amplitude.
+    random_state : int, optional
+        Random number generator seed, by default None
+    f_is_even : bool, optional
+        Whether f is an even function (ergo Hf is odd) or vice versa, by 
+        default True
+    stack_Hf_f : bool, optional
+        Stack Hf -f in the results, by default False
 
     Attributes
     ----------
@@ -398,12 +436,24 @@ class SincTrainingData(AbstractRandomTrainingDataGenerator):
     ----------
     n : array-like, shape (n_features,)
         The independent variable
-    stack_Hf_f : bool, optional
-        Stack Hf -f in the results, by default True
     n_samples : int, optional
         Number of samples to generate, by default 1000
+    amp : float, list, or function-like
+        Amplitude constant, list of [min,max) for uniform distribution,
+        or function to generate an amplitude.
+    center : float, list, or function-like
+        Center-n constant, list of [min,max) for uniform distribution,
+        or function to generate an amplitude.
+    width : float, list, or function-like
+        Width constant, list of [min,max) for uniform distribution,
+        or function to generate an amplitude.
     random_state : int, optional
         Random number generator seed, by default None
+    f_is_even : bool, optional
+        Whether f is an even function (ergo Hf is odd) or vice versa, by 
+        default True
+    stack_Hf_f : bool, optional
+        Stack Hf -f in the results, by default False
 
     Attributes
     ----------
@@ -465,19 +515,16 @@ class SyntheticSpectra:
             [Min, Max) number of peaks that can be in a single spectrum,
             by default [1,30]
         """
-    def __init__(self, lineshape_inst, n_spectra=100, n_peak_lims=[1,30],
-                 f_is_even=True):
+    def __init__(self, lineshape_inst, n_spectra=100, n_peak_lims=[1,30]):
 
         self._can_update = False
 
         self._lineshape_inst = lineshape_inst
         self._n_spectra = None
         self._n_peak_lims = None
-        self._f_is_even = None
 
         self.n_spectra = n_spectra
         self.n_peak_lims = n_peak_lims
-        self.f_is_even = f_is_even
         self.lineshape_inst = lineshape_inst
         self._can_update = True
 
@@ -500,12 +547,10 @@ class SyntheticSpectra:
             self.lineshape_inst.n_samples = n_peaks
             self.conditions_.append(self.lineshape_inst.conditions_)
 
-            if self.f_is_even:
-                self.f_.append(self.lineshape_inst.f_.sum(axis=0))
-                self.Hf_.append(self.lineshape_inst.Hf_.sum(axis=0))
-            else:
-                self.f_.append(-self.lineshape_inst.Hf_.sum(axis=0))
-                self.Hf_.append(self.lineshape_inst.f_.sum(axis=0))
+            
+            self.f_.append(self.lineshape_inst.f_.sum(axis=0))
+            self.Hf_.append(self.lineshape_inst.Hf_.sum(axis=0))
+            
         self.f_ = np.array(self.f_)
         self.Hf_ = np.array(self.Hf_)
 
@@ -536,14 +581,6 @@ class SyntheticSpectra:
         self._n_peak_lims = value
         self.regenerate()
 
-    @property
-    def f_is_even(self):
-        return self._f_is_even
-
-    @f_is_even.setter
-    def f_is_even(self, value):
-        self._f_is_even = value
-        self.regenerate()
 
 
 
