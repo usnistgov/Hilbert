@@ -21,6 +21,11 @@ class AbstractRandomTrainingDataGenerator(ABC):
     amp : float, list, or function-like
         Amplitude constant, list of [min,max) for uniform distribution,
         or function to generate an amplitude.
+    amp_reps : list or array-like (of float)
+        Supercedes amp. Generate replicate sets of lineshape only varying
+        in amplitude. E.g., [1.0 ,2.0] would be identical sets of lineshapes but one
+        with amp 1 and one with amp 2. n_samples will be re-written with new
+        larger value. Only float & int constants currently supported.
     center : float, list, or function-like
         Center-n constant, list of [min,max) for uniform distribution,
         or function to generate an amplitude.
@@ -49,9 +54,9 @@ class AbstractRandomTrainingDataGenerator(ABC):
               'width_over_dn_is_min_width' : 3 / m_width_is_fwhm  # min FWHM = 3 dn
              }
 
-    def __init__(self, n, n_samples=1000, amp=1., center=None, width=None,
-                 random_state=None, f_is_even=True, stack_Hf_f=False
-                 ):
+    def __init__(self, n, n_samples=1000, amp=1., amp_reps=None, center=None, 
+                 width=None, random_state=None, f_is_even=True, 
+                 stack_Hf_f=False):
 
         # Whether to re-update after changing params
         # Before all params are initially set, we don't want this
@@ -59,6 +64,7 @@ class AbstractRandomTrainingDataGenerator(ABC):
         self.n = n
 
         self._amp = None
+        self._amp_reps = None
         self._width = None
         self._center = None
         self._n_samples = None
@@ -70,6 +76,7 @@ class AbstractRandomTrainingDataGenerator(ABC):
         self._center_fcn = None
 
         self.amp = amp
+        self.amp_reps = amp_reps
         self.width = width
         self.center = center
         self.n_samples = n_samples
@@ -121,6 +128,11 @@ class AbstractRandomTrainingDataGenerator(ABC):
         self.regenerate()
 
     @property
+    def n_samples_total(self):
+        if self.f_ is not None:
+            return self.f_.shape[0]
+            
+    @property
     def amp(self):
         return self._amp
 
@@ -128,6 +140,17 @@ class AbstractRandomTrainingDataGenerator(ABC):
     def amp(self, value):
         self._amp = value
         self._amp_fcn = self._ret_val_fcn(self._amp)
+        self.regenerate()
+
+    @property
+    def amp_reps(self):
+        return self._amp_reps
+
+    @amp_reps.setter
+    def amp_reps(self, value):
+        if value is not None:
+            assert np.alltrue([isinstance(v, (int, float)) for v in value])
+        self._amp_reps = value
         self.regenerate()
 
     @property
@@ -211,7 +234,11 @@ class AbstractRandomTrainingDataGenerator(ABC):
         while remaining_samples > 0:
             temp_widths = np.array([self._width_fcn() for _ in range(remaining_samples)])
 
-            temp_amps = np.array([self._amp_fcn() for _ in range(remaining_samples)])
+            if self.amp_reps is None:
+                temp_amps = np.array([self._amp_fcn() for _ in range(remaining_samples)])
+            else:
+                temp_amps = np.array([self.amp_reps[0] for _ in range(remaining_samples)])
+
             max_ctr = self.max_ctr(self.min_width)
             min_ctr = self.min_ctr(self.min_width)
 
@@ -233,7 +260,16 @@ class AbstractRandomTrainingDataGenerator(ABC):
             amp_list.extend(temp_amps.tolist())
 
             remaining_samples -= temp_ctrs.size
-            self.conditions_ = np.vstack((amp_list, ctr_list, width_list)).T
+        if self.amp_reps is not None:
+            for num, a in enumerate(self.amp_reps):
+                if num == 0:
+                    continue
+                else:
+                    amp_list.extend(self.n_samples*[a])
+                    width_list.extend(width_list[:self.n_samples])
+                    ctr_list.extend(ctr_list[:self.n_samples])
+
+        self.conditions_ = np.vstack((amp_list, ctr_list, width_list)).T
 
     def generate(self):
         """Generate f_ and Hf_ based on self.conditions"""

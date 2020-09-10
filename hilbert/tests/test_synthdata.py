@@ -348,3 +348,19 @@ def test_center_lims():
     lineshape_inst = LorentzianTrainingData(n, n_samples=1, center=[1.0, 10.0])
     assert np.alltrue(lineshape_inst.conditions_[:,1] < 10.0)
     assert np.alltrue(lineshape_inst.conditions_[:,1] >= 1.0)
+
+def test_amp_reps():
+    """ Testing to make sure that the amp_reps does what it's supposed to
+     do. Using Lorentzian as a proxy for the Abtsract class"""
+
+    n_samples = 10
+    n = np.linspace(-100,100,1001)
+
+    amps = [1.0, 2.0, 3.1]
+    lineshape_inst = LorentzianTrainingData(n, n_samples=n_samples, 
+                                            amp_reps=amps)
+
+    assert np.unique(lineshape_inst.conditions_[:,0]).size == len(amps)
+    assert np.unique(lineshape_inst.conditions_[:,1]).size == n_samples
+    assert np.unique(lineshape_inst.conditions_[:,2]).size == n_samples
+    assert lineshape_inst.f_.shape[0] == n_samples * len(amps)
