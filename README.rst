@@ -1,17 +1,5 @@
 .. -*- mode: rst -*-
 
-|Travis|_ |AppVeyor|_ |Codecov|_
-
-.. |Travis| image:: https://travis-ci.org/CCampJr/Hilbert.svg?branch=master
-.. _Travis: https://travis-ci.org/CCampJr/Hilbert
-
-.. |AppVeyor| image:: https://ci.appveyor.com/api/projects/status/lbrajuilaeo9x322/branch/master?svg=true
-.. _AppVeyor: https://ci.appveyor.com/project/CCampJr/Hilbert
-
-.. |Codecov| image:: https://codecov.io/gh/CCampJr/Hilbert/branch/master/graph/badge.svg
-.. _Codecov: https://codecov.io/gh/CCampJr/Hilbert
-
-
 Hilbert - Discrete Hilbert Transform Implementations
 ============================================================
 
