@@ -1,5 +1,9 @@
 .. -*- mode: rst -*-
 
+.. image:: https://github.com/CCampJr/Hilbert/actions/workflows/python-testing.yml/badge.svg
+	:alt: pytest
+	:target: https://github.com/CCampJr/Hilbert/actions/workflows/python-testing.yml
+
 .. image:: https://codecov.io/gh/CCampJr/Hilbert/branch/master/graph/badge.svg?token=WIHgHEUc82
 	:alt: Codecov
 	:target: https://codecov.io/gh/CCampJr/Hilbert
