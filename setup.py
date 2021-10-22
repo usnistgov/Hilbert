@@ -15,7 +15,7 @@ DISTNAME = 'Hilbert'
 DESCRIPTION = 'This package provide several implementations of the discrete Hilbert transform (DHT).'
 with codecs.open('README.rst', encoding='utf-8-sig') as f:
     LONG_DESCRIPTION = f.read()
-MAINTAINER = 'C. H. Camp Jr.'
+MAINTAINER = 'Charles H. Camp Jr.'
 MAINTAINER_EMAIL = 'charles.camp@nist.gov'
 URL = ''
 LICENSE = 'Public Domain'
@@ -37,6 +37,7 @@ CLASSIFIERS = ['Development Status :: 3 - Alpha',
                'Programming Language :: Python :: 3.5',
                'Programming Language :: Python :: 3.6',
                'Programming Language :: Python :: 3.7',
+               'Programming Language :: Python :: 3.8',
                'Topic :: Scientific/Engineering :: Information Analysis',
                'Topic :: Scientific/Engineering :: Mathematics',
                'Topic :: Scientific/Engineering :: Physics']
