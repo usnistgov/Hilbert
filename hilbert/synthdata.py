@@ -56,7 +56,7 @@ class AbstractRandomTrainingDataGenerator(ABC):
 
     def __init__(self, n, n_samples=1000, amp=1., amp_reps=None, center=None, 
                  width=None, random_state=None, f_is_even=True, 
-                 stack_Hf_f=False):
+                 stack_Hf_f=False, **kwargs):
 
         # Whether to re-update after changing params
         # Before all params are initially set, we don't want this
@@ -88,6 +88,10 @@ class AbstractRandomTrainingDataGenerator(ABC):
         self.f_ = None
         self.Hf_ = None
         self.conditions_ = None
+
+        if kwargs:
+            for k in kwargs:
+                self.config.update({k:kwargs[k]})
 
         self.generate_conditions()
         self.generate()
@@ -289,7 +293,7 @@ class AbstractRandomTrainingDataGenerator(ABC):
 
         if self.stack_Hf_f:
             self.f_ = np.vstack((f, Hf))
-            self.Hf_ = np.vstack((Hf, -f))
+            self.Hf_ = np.vstack((Hf, -1*f))
             self.conditions_ = np.vstack((self.conditions_, self.conditions_))
         else:
             self.f_ = f
