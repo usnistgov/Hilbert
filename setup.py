@@ -20,8 +20,9 @@ MAINTAINER_EMAIL = 'charles.camp@nist.gov'
 URL = ''
 LICENSE = 'Public Domain'
 DOWNLOAD_URL = ''
-VERSION = __version__
-INSTALL_REQUIRES = ['numpy', 'scipy', 'scikit-learn']
+VERSION = __version__  # noqa: F821
+with open('./requirements.txt','r') as f:
+    INSTALL_REQUIRES = f.read().splitlines()
 CLASSIFIERS = ['Development Status :: 3 - Alpha',
                'Intended Audience :: Science/Research',
                'Intended Audience :: Developers',

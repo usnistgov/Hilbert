@@ -1,16 +1,16 @@
 .. -*- mode: rst -*-
 
-|Travis|_ |AppVeyor|_ |Codecov|_
+.. image:: https://github.com/CCampJr/Hilbert/actions/workflows/python-testing.yml/badge.svg
+	:alt: pytest
+	:target: https://github.com/CCampJr/Hilbert/actions/workflows/python-testing.yml
 
-.. |Travis| image:: https://travis-ci.org/CCampJr/Hilbert.svg?branch=master
-.. _Travis: https://travis-ci.org/CCampJr/Hilbert
+.. image:: https://codecov.io/gh/CCampJr/Hilbert/branch/master/graph/badge.svg?token=WIHgHEUc82
+	:alt: Codecov
+	:target: https://codecov.io/gh/CCampJr/Hilbert
 
-.. |AppVeyor| image:: https://ci.appveyor.com/api/projects/status/lbrajuilaeo9x322/branch/master?svg=true
-.. _AppVeyor: https://ci.appveyor.com/project/CCampJr/Hilbert
-
-.. |Codecov| image:: https://codecov.io/gh/CCampJr/Hilbert/branch/master/graph/badge.svg
-.. _Codecov: https://codecov.io/gh/CCampJr/Hilbert
-
+.. image:: https://img.shields.io/badge/License-NIST%20Public%20Domain-green.svg
+    :alt: NIST Public Domain
+    :target: https://github.com/CCampJr/Hilbert/blob/master/LICENSE.md
 
 Hilbert - Discrete Hilbert Transform Implementations
 ============================================================
@@ -113,3 +113,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Contact
 -------
 Charles H Camp Jr: `charles.camp@nist.gov <mailto:charles.camp@nist.gov>`_
+
+Contributors
+-------------
+
+-   Charles H Camp Jr
