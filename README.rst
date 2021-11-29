@@ -113,3 +113,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Contact
 -------
 Charles H Camp Jr: `charles.camp@nist.gov <mailto:charles.camp@nist.gov>`_
+
+Contributors
+-------------
+
+-   Charles H Camp Jr
