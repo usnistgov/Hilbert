@@ -51,18 +51,18 @@ def hilbert_fft_henrici(x, axis=-1, bad_value='eps', min_value=None):
     time_vec = time_vec[slice_add_dims]
 
     # Perform Hilbert
-    x = fftpack.ifft(x, axis=axis, overwrite_x=True)   
-    x *= 1j*np.sign(time_vec)
-    x = fftpack.fft(x, axis=axis, overwrite_x=True)
+    fx = fftpack.ifft(x, axis=axis, overwrite_x=False)   
+    fx *= 1j*np.sign(time_vec)
+    hx = fftpack.fft(fx, axis=axis, overwrite_x=True).real
     
     if bad_value:
-        x[np.isnan(x)] = bad_value
-        x[np.isinf(x)] = bad_value
+        hx[np.isnan(hx)] = bad_value
+        hx[np.isinf(hx)] = bad_value
         
     if min_value:
-        x[x < min_value] = min_value
+        hx[hx < min_value] = min_value
 
-    return x.real
+    return hx
     
 
 def hilbert_fft_marple(x, axis=-1, bad_value='eps', min_value=None):
@@ -98,17 +98,35 @@ def hilbert_fft_marple(x, axis=-1, bad_value='eps', min_value=None):
     if min_value == 'eps':
         min_value = np.finfo(x.dtype).eps
 
+    #! I don't know if Scipy's is actually Marple's method anymore
     # SciPy implementation returns the `analytic` signal; thus, taking imag
-    x = _hilbert_analytic_marple(x, axis=axis).imag
+    # x = _hilbert_analytic_marple(x, axis=axis).imag
+    
+    # Transcribed from https://www.gaussianwaves.com/2017/04/analytic-signal-hilbert-transform-and-fft/
+    N = x.shape[axis]
+    fx = fftpack.fft(x,N, axis=axis, overwrite_x=False)
+    h = np.zeros(N)
+    
+    if N % 2 == 0:  # Even-length
+        h[0] = 1
+        h[1:N//2] = 2
+        h[N//2] = 1
+    else:  # Odd length
+        h[0] = 1
+        h[1:(N+1)//2] = 2
+
+    hx = fx*h
+    hx = fftpack.ifft(hx, N, axis=axis, overwrite_x=True).imag
+    
     
     if bad_value:
-        x[np.isnan(x)] = bad_value
-        x[np.isinf(x)] = bad_value
+        hx[np.isnan(hx)] = bad_value
+        hx[np.isinf(hx)] = bad_value
         
     if min_value:
-        x[x < min_value] = min_value
+        hx[hx < min_value] = min_value
 
-    return x
+    return hx
 
 if __name__ == '__main__':  # pragma: no cover
     # import timeit as _timeit
