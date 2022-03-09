@@ -98,7 +98,6 @@ def hilbert_fft_marple(x, axis=-1, bad_value='eps', min_value=None):
     if min_value == 'eps':
         min_value = np.finfo(x.dtype).eps
 
-    #! I don't know if Scipy's is actually Marple's method anymore
     # SciPy implementation returns the `analytic` signal; thus, taking imag
     # x = _hilbert_analytic_marple(x, axis=axis).imag
     
@@ -127,6 +126,22 @@ def hilbert_fft_marple(x, axis=-1, bad_value='eps', min_value=None):
         hx[hx < min_value] = min_value
 
     return hx
+
+def hilbert_scipy(x, *args, **kwargs):
+    """Compute the Hilbert Transform using SciPy's hilbert function
+
+    Parameters
+    ----------
+    x : array-like
+        Input signal such that y[n] = H{x[n]} will ultimately be returned
+    
+    Returns
+    -------
+    ndarray
+        Hilbert transformed data
+
+    """
+    return _hilbert_analytic_marple(x, *args, **kwargs).imag
 
 if __name__ == '__main__':  # pragma: no cover
     # import timeit as _timeit
