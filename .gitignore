@@ -69,3 +69,7 @@ doc/generated/
 
 # PyBuilder
 target/
+
+# Example outputs
+Examples/*.png
+Examples/.ipynb_checkpoints

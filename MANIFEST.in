@@ -12,4 +12,5 @@ recursive-include Examples *.ipynb *.png
 prune Examples/.ipynb_checkpoints
 prune Examples/Old
 prune Examples/outputs
-exclude Examples/*.eps
+exclude Examples/*.png
+exclude Examples/*.h5
