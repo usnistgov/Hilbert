@@ -15,7 +15,7 @@
 Hilbert - Discrete Hilbert Transform Implementations
 ============================================================
 
-**Hilbert** is a project that will contain numerous implementations (and approximations) of the discrete Hilbert transform.
+**Hilbert** is a project that will contain numerous implementations of the Hilbert transform for discrete data.
 
 Currently, this package is a work in progress and should probably **not be used**. 
 
