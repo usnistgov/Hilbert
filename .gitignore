@@ -72,4 +72,5 @@ target/
 
 # Example outputs
 Examples/*.png
+Examples/*.eps
 Examples/.ipynb_checkpoints
