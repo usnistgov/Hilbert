@@ -3,7 +3,7 @@ from .wavelet import hilbert_haar
 from .estimators import DHT, DHT_Pad, LeDHT
 
 from .synthdata import GaussianTrainingData, LorentzianTrainingData, SincTrainingData, SyntheticSpectra
-from .preprocess import pad, depad, hilbert_pad_wrap, hilbert_pad_simple
+from .utils import pad, depad, hilbert_pad_wrap, hilbert_pad_simple
 from .metrics import rss, mse, mlhilb_scorer
 
 from ._version import __version__

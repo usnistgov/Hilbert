@@ -6,7 +6,7 @@ import numpy as np
 from sklearn.linear_model import LinearRegression
 from sklearn.base import RegressorMixin, BaseEstimator
 from scipy.signal import hilbert as _scipy_hilbert
-from hilbert.preprocess import hilbert_pad_simple
+from hilbert.utils import hilbert_pad_simple
 from hilbert.dft import hilbert_scipy
 
 class DHT(BaseEstimator, RegressorMixin):
