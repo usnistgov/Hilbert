@@ -4,9 +4,9 @@
 	:alt: pytest
 	:target: https://github.com/usnistgov/Hilbert/actions/workflows/python-testing.yml
 
-.. image:: https://codecov.io/gh/CCampJr/Hilbert/branch/master/graph/badge.svg?token=WIHgHEUc82
+.. image:: https://codecov.io/gh/usnistgov/Hilbert/branch/master/graph/badge.svg?token=WIHgHEUc82
 	:alt: Codecov
-	:target: https://codecov.io/gh/CCampJr/Hilbert
+	:target: https://codecov.io/gh/usnistgov/Hilbert
 
 .. image:: https://img.shields.io/badge/License-NIST%20Public%20Domain-green.svg
     :alt: NIST Public Domain
