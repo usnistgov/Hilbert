@@ -17,7 +17,9 @@ Hilbert - Discrete Hilbert Transform Implementations
 
 **Hilbert** is a project that will contain numerous implementations of the Hilbert transform for discrete data.
 
-Currently, this package is a work in progress and should probably **not be used**. 
+Currently, this package is a work in progress and should probably **not be used**.
+
+arXiv manuscript on a learned-matrix approach to the DHT (LeDHT): https://arxiv.org/abs/2204.00666
 
 Currently Implemented
 ----------------------
@@ -27,6 +29,9 @@ Currently Implemented
     -   Henrici [1]_
     -   Marple (SciPy and MATLAB's *hilbert* implementation) [2]_
     -   Haar wavelet-based (similar to Zhou-Yang [3]_)
+
+-   Learned-matrix approach to the DHT (LeDHT) [4]_
+    -   Data and code from the arXiv manuscript is available in the Examples folder as a Jupyter Notebook
 
 References
 ~~~~~~~~~~~
@@ -41,19 +46,20 @@ References
        the Hilbert transform with Haar multiresolution approximation," J. Comput. 
        Appl. Math. 223(2), 585–597 (2009).
 
+.. [4] C. H. Camp Jr., "Raman Signal Extraction from CARS Spectra Using a 
+       Learned-Matrix Representation of the Discrete Hilbert Transform,"
+       arXiv: 2204.00666 (2022).
+
 Coming Soon
 ------------
 
 -   Implementations
 
     -   B-splines implementation (Bilato)
-    -   Haar multiresolution (Zhou-Yang)
     -   Sinc / Whittaker Cardinal
     -   and more!
 
 -   Documentation
--   Jupyter Notebook Examples
-
 
 Dependencies
 ------------
