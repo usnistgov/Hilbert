@@ -104,8 +104,32 @@ Using pip (soft install, i.e. can update with git)
 Usage
 ------
 
+.. code:: python
+
+    import numpy as np
+    import matplotlib.pyplot as plt
+    from hilbert_toolkit import hilbert_fft_marple as dht
+    from hilbert_toolkit import hilbert_pad_simple
+
+    dht_pad = lambda x: hilbert_pad_simple(x, dht, 1)
+
+    n = np.arange(-500,501)
+
+    sig_analytical = -2 / (n + 1j*50)
+    plt.plot(n,sig_analytical.real, label='Real Part')
+    plt.plot(n,sig_analytical.imag, label='Imag Part')
+    plt.plot(n,dht(sig_analytical.real), label='DHT{Real Part}')
+    plt.plot(n,dht_pad(sig_analytical.real), label='DHT-Pad{Real Part}')
+    plt.legend()
+    plt.xlabel('n')
+    plt.ylabel('Amplitude (au)')
+    plt.show()
+
 Citing This Software
 ---------------------
+
+C. H. Camp Jr., "Raman Signal Extraction from CARS Spectra Using a Learned-Matrix Representation of the Discrete Hilbert Transform",
+arXiv:2204.00666 (2022).
 
 LICENSE
 ----------
