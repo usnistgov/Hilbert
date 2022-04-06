@@ -1,9 +1,12 @@
 # Configuration for coverage.py
 
+import hilbert_toolkit
+
+
 [run]
 branch = True
-source = hilbert
-include = */hilbert/*
+source = hilbert_toolkit
+include = */hilbert_toolkit/*
 omit =
     */setup.py
 
