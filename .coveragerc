@@ -1,14 +1,10 @@
 # Configuration for coverage.py
 
-import hilbert_toolkit
-
-
 [run]
 branch = True
 source = hilbert_toolkit
 include = */hilbert_toolkit/*
-omit =
-    */setup.py
+omit = */setup.py
 
 [report]
 exclude_lines =
