@@ -8,7 +8,7 @@ analytical Hilbert transform: x^2 / (a^2 + x^2)
 import numpy as np
 from numpy.testing import assert_array_almost_equal
 
-from hilbert.wavelet import hilbert_haar, _haar_matrix
+from hilbert_toolkit.wavelet import hilbert_haar, _haar_matrix
 
 import pytest
 

@@ -13,4 +13,4 @@ prune Examples/.ipynb_checkpoints
 prune Examples/Old
 prune Examples/outputs
 exclude Examples/*.png
-exclude Examples/*.h5
+include Examples/*.h5

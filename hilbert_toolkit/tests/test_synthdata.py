@@ -5,7 +5,7 @@ Testing for synthetic data generation methods
 import numpy as np
 from numpy.testing import assert_array_almost_equal
 
-from hilbert.synthdata import (SincTrainingData, GaussianTrainingData,
+from hilbert_toolkit.synthdata import (SincTrainingData, GaussianTrainingData,
                                LorentzianTrainingData, SyntheticSpectra)
 
 def test_sinc_max_width():

@@ -196,7 +196,7 @@ def hilbert_pad_simple(x, hilbert_lambda, m_multi_size=1, stat_len=1, axis=-1):
 
 
 if __name__ == '__main__':
-    from hilbert.dft import hilbert_fft_henrici
+    from hilbert_toolkit.dft import hilbert_fft_henrici
     fcn = hilbert_pad_wrap(lambda x: hilbert_fft_henrici(x), lambda x: pad(x,10), lambda x: depad(x,10))
     X = np.random.randn(2,1001)
     print(fcn(X))

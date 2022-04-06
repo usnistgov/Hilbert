@@ -6,7 +6,7 @@ Testing for preprocessing methods (signal manipulation prior to DHT)
 import numpy as np
 from numpy.testing import assert_array_almost_equal
 
-from hilbert.utils import pad, depad
+from hilbert_toolkit.utils import pad, depad
 
 def test_pad():
     """ Test out padding procedure """

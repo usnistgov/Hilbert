@@ -8,7 +8,7 @@ analytical Hilbert transform: x^2 / (a^2 + x^2)
 import numpy as np
 from numpy.testing import assert_array_almost_equal
 
-from hilbert.dft import hilbert_fft_henrici, hilbert_fft_marple
+from hilbert_toolkit.dft import hilbert_fft_henrici, hilbert_fft_marple
 
 
 def test_hilbert_fft_henrici():

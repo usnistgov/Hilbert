@@ -15,11 +15,15 @@
 Hilbert - Discrete Hilbert Transform Implementations
 ============================================================
 
-**Hilbert** is a project that will contain numerous implementations of the Hilbert transform for discrete data.
-
-Currently, this package is a work in progress and should probably **not be used**.
+**Hilbert** is a project that will contain numerous implementations of the 
+Hilbert transform for discrete data. This will hopefully enable users to 
+compare different implementation, such as the newly introduced LeDHT (see 
+below).
 
 arXiv manuscript on a learned-matrix approach to the DHT (LeDHT): https://arxiv.org/abs/2204.00666
+
+-   Jupyter notebooks to recreate the main and supplemental text figures
+    (and data) are included in the Examples folder
 
 Currently Implemented
 ----------------------
@@ -64,10 +68,38 @@ Coming Soon
 Dependencies
 ------------
 
+-   Python 3.* (Tested on 3.8)
+-   NumPy (Tested on 1.19)
+-   SciPy (Tested on 1.5)
+-   Scikit-learn (Tested on 1.0)
+
 Installation
 -------------
 
-**NOTE**: The HDF5/H5 file that contains the experimental data for the Jupyter Notebooks in Examples/ is not included in the package if you installed via PIP. You will need to download the file from GitHub manually. 
+**NOTE**: The `Examples/` folder (and data) are not included in the pip installation.
+You will need to download the file from the `GitHub repo <https://github.com/usnistgov/Hilbert>`_ manually. 
+
+Using pip
+~~~~~~~~~
+
+.. code::
+
+    # If this fails, try hilbert_toolkit
+    pip install hilbert-toolkit
+
+Using pip (soft install, i.e. can update with git)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code::
+    
+    # Make new directory for pyMCR and enter it
+    # Clone from github
+    git clone https://github.com/usnistgov/hilbert .
+
+    pip install -e .
+
+    # To update in the future
+    git pull
 
 Usage
 ------
