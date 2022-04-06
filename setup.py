@@ -11,7 +11,7 @@ ver_file = os.path.join('hilbert', '_version.py')
 with open(ver_file) as f:
     exec(f.read())
 
-DISTNAME = 'Hilbert'
+DISTNAME = 'hilbert-toolkit'
 DESCRIPTION = 'This package provide several implementations of the discrete Hilbert transform (DHT).'
 with codecs.open('README.rst', encoding='utf-8-sig') as f:
     LONG_DESCRIPTION = f.read()
