@@ -89,7 +89,7 @@ Using pip (soft install, i.e. can update with git)
 
 .. code::
     
-    # Make new directory for pyMCR and enter it
+    # Make new directory for hilbert-toolkit and enter it
     # Clone from github
     git clone https://github.com/usnistgov/hilbert .
 
