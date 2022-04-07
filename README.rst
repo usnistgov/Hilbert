@@ -41,15 +41,12 @@ References
 ~~~~~~~~~~~
 
 .. [1] P. Henrici, Applied and Computational Complex Analysis Vol III 
-       (Wiley-Interscience, 1986).
-        
+       (Wiley-Interscience, 1986).  
 .. [2] L. Marple, "Computing the discrete-time “analytic” signal via FFT," 
        IEEE Trans. Signal Process. 47(9), 2600–2603 (1999).
-
 .. [3] C. Zhou, L. Yang, Y. Liu, and Z. Yang, "A novel method for computing 
        the Hilbert transform with Haar multiresolution approximation," J. Comput. 
        Appl. Math. 223(2), 585–597 (2009).
-
 .. [4] C. H. Camp Jr., "Raman Signal Extraction from CARS Spectra Using a 
        Learned-Matrix Representation of the Discrete Hilbert Transform,"
        arXiv: 2204.00666 (2022).
