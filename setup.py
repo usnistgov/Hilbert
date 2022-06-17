@@ -23,22 +23,12 @@ DOWNLOAD_URL = ''
 VERSION = __version__  # noqa: F821
 with open('./requirements.txt','r') as f:
     INSTALL_REQUIRES = f.read().splitlines()
-CLASSIFIERS = ['Development Status :: 3 - Alpha',
-               'Intended Audience :: Science/Research',
+CLASSIFIERS = ['Intended Audience :: Science/Research',
                'Intended Audience :: Developers',
                'Programming Language :: Python',
                'Topic :: Software Development',
                'Topic :: Scientific/Engineering',
-               'Operating System :: Microsoft :: Windows',
-               'Operating System :: POSIX',
-               'Operating System :: Unix',
-               'Operating System :: MacOS',
                'Programming Language :: Python :: 3 :: Only',
-               'Programming Language :: Python :: 3.4',
-               'Programming Language :: Python :: 3.5',
-               'Programming Language :: Python :: 3.6',
-               'Programming Language :: Python :: 3.7',
-               'Programming Language :: Python :: 3.8',
                'Topic :: Scientific/Engineering :: Information Analysis',
                'Topic :: Scientific/Engineering :: Mathematics',
                'Topic :: Scientific/Engineering :: Physics']
